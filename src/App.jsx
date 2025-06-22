@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Header from './components/Header';
 import MoodSelector from './components/MoodSelector';
 import GenreSelector from './components/GenreSelector';
@@ -19,6 +19,19 @@ function App() {
   const [toast, setToast] = useState('');
 
   const audioRef = useRef(null);
+
+  // Load liked tracks from localStorage on first load
+  useEffect(() => {
+    const savedLikes = localStorage.getItem('likedTracks');
+    if (savedLikes) {
+      setLikedTracks(new Set(JSON.parse(savedLikes)));
+    }
+  }, []);
+
+  // Save liked tracks to localStorage when changed
+  useEffect(() => {
+    localStorage.setItem('likedTracks', JSON.stringify(Array.from(likedTracks)));
+  }, [likedTracks]);
 
   const showToast = (message) => {
     setToast(message);
@@ -54,15 +67,24 @@ function App() {
 
   const togglePlay = () => {
     if (!audioRef.current || !currentTrack) return;
-    isPlaying ? audioRef.current.pause() : audioRef.current.play().catch(() => showToast('Error playing track'));
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(() => showToast('Error playing track'));
+    }
     setIsPlaying(!isPlaying);
   };
 
   const toggleLike = (trackId) => {
     const updatedLikes = new Set(likedTracks);
-    updatedLikes.has(trackId) ? updatedLikes.delete(trackId) : updatedLikes.add(trackId);
+    if (updatedLikes.has(trackId)) {
+      updatedLikes.delete(trackId);
+      showToast('Removed from favorites');
+    } else {
+      updatedLikes.add(trackId);
+      showToast('❤️ Added to favorites');
+    }
     setLikedTracks(updatedLikes);
-    showToast(updatedLikes.has(trackId) ? '❤️ Added to favorites' : 'Removed from favorites');
   };
 
   const downloadTrack = () => {
