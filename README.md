@@ -14,6 +14,7 @@ A lightweight Node.js server that:
 - Serves a set of pre-defined royalty-free tracks
 - Filters and returns a track based on user-selected mood & genre
 
+Backend GitHub Repo: https://github.com/Kunalkudande/Wubble-Backend
 Backend is deployed on Render: https://wubble-backend.onrender.com
 #### Folder Structure
 
