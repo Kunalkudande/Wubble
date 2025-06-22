@@ -20,18 +20,28 @@ function App() {
 
   const audioRef = useRef(null);
 
-  // Load liked tracks from localStorage on first load
+  // Load from localStorage on first mount
   useEffect(() => {
     const savedLikes = localStorage.getItem('likedTracks');
     if (savedLikes) {
       setLikedTracks(new Set(JSON.parse(savedLikes)));
     }
+
+    const savedRecent = localStorage.getItem('recentTracks');
+    if (savedRecent) {
+      setRecentTracks(JSON.parse(savedRecent));
+    }
   }, []);
 
-  // Save liked tracks to localStorage when changed
+  // Save likes to localStorage on change
   useEffect(() => {
     localStorage.setItem('likedTracks', JSON.stringify(Array.from(likedTracks)));
   }, [likedTracks]);
+
+  // Save recent tracks to localStorage on change
+  useEffect(() => {
+    localStorage.setItem('recentTracks', JSON.stringify(recentTracks));
+  }, [recentTracks]);
 
   const showToast = (message) => {
     setToast(message);
@@ -56,7 +66,7 @@ function App() {
       });
       const track = await response.json();
       setCurrentTrack(track);
-      setRecentTracks([track, ...recentTracks.slice(0, 4)]);
+      setRecentTracks([track, ...recentTracks.filter(t => t.id !== track.id)].slice(0, 5));
       showToast('🎵 Track generated successfully!');
     } catch (error) {
       showToast('Error generating track');
