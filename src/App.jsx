@@ -6,7 +6,7 @@ import TrackPlayer from './components/TrackPlayer';
 import RecentTracks from './components/RecentTracks';
 import Toast from './components/Toast';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://wubble-backend.onrender.com/api';
 
 function App() {
   const [selectedMood, setSelectedMood] = useState('');
